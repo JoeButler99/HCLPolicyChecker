@@ -1,0 +1,33 @@
+---
+Variables:
+  - CheckName: HasKey
+    Details:
+      Items:
+        - description
+        - type
+  - CheckName: KeyValueLength
+    Details:
+      - KeyName: description
+        MinLength: 10
+        MaxLength: 300
+      - KeyName: name
+        MinLength: 3
+        MaxLength: 40
+Outputs:
+  - CheckName: HasKey
+    Details:
+      Items:
+        - description
+Resources:
+  aws_iam_role:
+    - CheckName: HasTags
+      Details:
+        Items:
+          - Name
+          - Bum
+          - Repo
+          - Version
+    - CheckName: HasTags
+      Details:
+        Items:
+          - Description
