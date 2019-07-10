@@ -56,7 +56,7 @@ func RunChecks(p *PolicyConfig, loadedHcl *configs.Config) {
 				if hclVar.Type == resourceType {
 					for _, check := range checkList {
 						var hclObj HCLObject
-						hclObj.FromResource(hclVar)
+						hclObj.FromResource(hclVar, loadedHcl.Module)
 						RunCheck(&check, &results, &hclObj, "Resource")
 					}
 				}

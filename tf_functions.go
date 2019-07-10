@@ -7,7 +7,9 @@ import (
 	"fmt"
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
+	"github.com/hashicorp/terraform/lang/funcs"
 	"github.com/zclconf/go-cty/cty"
+	"github.com/zclconf/go-cty/cty/function"
 )
 
 //
@@ -44,22 +46,42 @@ func (h *HCLObject) FromOutput(o *configs.Output) {
 
 }
 
-
-
-func (h *HCLObject) FromResource(r *configs.Resource) {
-	fmt.Println(r)
-	fmt.Println()
-	fmt.Println(r.Config)
+func (h *HCLObject) FromResource(r *configs.Resource, module *configs.Module) {
 
 	a, _ := r.Config.JustAttributes()
-	fmt.Println(a)
+	//fmt.Println(module.Locals)
+	//
+	//for k, v := range module.Locals {
+	//	fmt.Println(k, v)
+	//}
 
 	for k, v := range a {
-		fmt.Println(k, v)
 		if k == "tags" {
-			fmt.Println("TAGS")
-			fmt.Printf("%+v\n", v)
+			fmt.Println("NEW")
+			vars := make(map[string]cty.Value)
+
+			for a, b := range v.Expr.Variables() {
+				fmt.Println(a, b.RootName())
+			}
+			fmt.Println(vars)
+
+			evalContext := &hcl.EvalContext{
+				Variables: map[string]cty.Value{},
+				//Variables: variables
+				Functions: map[string]function.Function{
+					"merge": funcs.MergeFunc,
+				},
+			}
+
 			fmt.Println()
+
+			fmt.Println(v.Expr.Value(evalContext))
+
+			val, _ := v.Expr.Value(evalContext)
+			fmt.Println(val.Type())
+			//fmt.Println(val.AsValueSet())
+
+			//fmt.Println(val.AsValueMap())
 		}
 	}
 	//fmt.Println(r.Config.PartialContent(nil))

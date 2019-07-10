@@ -1,5 +1,6 @@
 package main
 
+import "C"
 import (
 	"errors"
 	"flag"
@@ -7,6 +8,8 @@ import (
 	"github.com/hashicorp/terraform/command"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
+	"github.com/hashicorp/terraform/terraform"
+	"github.com/zclconf/go-cty/cty"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
@@ -80,6 +83,7 @@ func (p *PolicyConfig) LoadPolicy(filename string) error {
 
 type HclConfig struct {
 	command.Meta
+	context *terraform.Context
 }
 
 func (m *HclConfig) normalizePath(path string) string {
@@ -120,6 +124,34 @@ func (c *HclConfig) LoadConfig(dir string) *configs.Config {
 	if cfgDiags.HasErrors() {
 		QuitError(cfgDiags, "Error Loading config to analyse. ", 1)
 	}
+
+	varValues := make(terraform.InputValues)
+	for name, variable := range cfg.Module.Variables {
+		ty := variable.Type
+		if ty == cty.NilType {
+			// Can't predict the type at all, so we'll just mark it as
+			// cty.DynamicVal (unknown value of cty.DynamicPseudoType).
+			ty = cty.DynamicPseudoType
+		}
+		varValues[name] = &terraform.InputValue{
+			Value:      cty.UnknownVal(ty),
+			SourceType: terraform.ValueFromCLIArg,
+		}
+	}
+
+	var opts terraform.ContextOpts
+
+	opts.UIInput = c.UIInput()
+	opts.Meta = &terraform.ContextMeta{
+		Env: c.Workspace(),
+	}
+
+	ctx, ctxDiags := terraform.NewContext(&opts)
+	if ctxDiags.HasErrors() {
+		QuitError(ctxDiags.Err(), "Error Loading config context", 1)
+	}
+
+	c.context = ctx
 
 	return cfg
 }

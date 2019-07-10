@@ -31,3 +31,15 @@ Resources:
       Details:
         Items:
           - Description
+  aws_security_group:
+    - CheckName: HasTags
+      Details:
+        Items:
+          - Name
+          - Bum
+          - Repo
+          - Version
+    - CheckName: HasTags
+      Details:
+        Items:
+          - Description
