@@ -5,7 +5,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/hashicorp/hcl2/hcl"
+	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/lang/funcs"
 	"github.com/zclconf/go-cty/cty"
@@ -66,8 +66,6 @@ func (h *HCLObject) FromResource(r *configs.Resource, module *configs.Module) {
 			}
 
 			fmt.Println()
-
-			fmt.Println(v.Expr.Value(evalContext))
 
 			val, _ := v.Expr.Value(evalContext)
 			fmt.Println(val.Type())
