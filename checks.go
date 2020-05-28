@@ -65,22 +65,22 @@ func RunCheck(check *Check, results *Results, hclVar *HCLObject, typeName string
 		details := HasKeyDetails{}
 		err := mapstructure.Decode(check.Details, &details)
 		if err != nil {
-			results.AddError(err.Error())
+			results.addError(err.Error())
 			break
 		}
 
 		for _, keyName := range details.Items {
 			if CheckHasKey(hclVar, keyName) || CheckHasKey(hclVar, strings.Title(keyName)) {
-				results.AddPass(fmt.Sprintf("Found Key %s in %s %s", strings.Title(keyName), typeName, hclVar.Name))
+				results.addPass(fmt.Sprintf("Found Key %s in %s %s", strings.Title(keyName), typeName, hclVar.Name))
 			} else {
-				results.AddFail(fmt.Sprintf("Missing or Empty Key %s in %s %s", strings.Title(keyName), typeName, hclVar.Name))
+				results.addFail(fmt.Sprintf("Missing or Empty Key %s in %s %s", strings.Title(keyName), typeName, hclVar.Name))
 			}
 		}
 	case "KeyValueLength":
 		details := []KeyValueLengthDetails{}
 		err := mapstructure.Decode(check.Details, &details)
 		if err != nil {
-			results.AddError(err.Error())
+			results.addError(err.Error())
 			break
 		}
 
@@ -91,13 +91,13 @@ func RunCheck(check *Check, results *Results, hclVar *HCLObject, typeName string
 
 				passed, msg := CheckStringLength(keyValueLengthCheck.MinLength, keyValueLengthCheck.MaxLength, s)
 				if passed {
-					results.AddPass(fmt.Sprintf("%s %s.%s length between %d and %d chars", typeName, hclVar.Name, kn, keyValueLengthCheck.MinLength, keyValueLengthCheck.MaxLength))
+					results.addPass(fmt.Sprintf("%s %s.%s length between %d and %d chars", typeName, hclVar.Name, kn, keyValueLengthCheck.MinLength, keyValueLengthCheck.MaxLength))
 				} else {
-					results.AddFail(fmt.Sprintf("Fail %s %s.%s %s. - %s", typeName, hclVar.Name, kn, msg, hclVar.DeclRange))
+					results.addFail(fmt.Sprintf("Fail %s %s.%s %s. - %s", typeName, hclVar.Name, kn, msg, hclVar.DeclRange))
 				}
 			} else {
 				// TODO - THis can be a duplicate of above - we might want a nicer way to store the results to de-dup
-				results.AddFail(fmt.Sprintf("Missing or Empty Key %s in %s %s", kn, typeName, hclVar.Name))
+				results.addFail(fmt.Sprintf("Missing or Empty Key %s in %s %s", kn, typeName, hclVar.Name))
 			}
 		}
 	}

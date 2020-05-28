@@ -1,6 +1,5 @@
 package main
 
-import "C"
 import (
 	"errors"
 	"flag"
@@ -18,8 +17,6 @@ import (
 )
 
 // CLI Flags
-const DefaultDataDir = ".terraform"
-
 var Usage = "HCLPolicyChecker -target <TerraformDirectory> -policy <PolicyFile.yml>"
 
 type CliConfiguration struct {
@@ -44,12 +41,12 @@ func ValidateConfig(c *CliConfiguration) {
 
 	if c.TargetDir == "" {
 		fmt.Println(Usage)
-		QuitError(errors.New("Target Directory cannot be empty."), "", 1)
+		QuitError(errors.New("target directory cannot be empty"), "", 1)
 	}
 
 	if c.PolicyName == "" {
 		fmt.Println(Usage)
-		QuitError(errors.New("Policy File cannot be empty."), "", 1)
+		QuitError(errors.New("policy file cannot be empty"), "", 1)
 	}
 
 }

@@ -68,30 +68,30 @@ func RunChecks(p *PolicyConfig, loadedHcl *configs.Config) {
 
 }
 
-func (r *Results) AddPass(msg string) {
+func (r *Results) addPass(msg string) {
 	r.PassCheckNumbers = append(r.PassCheckNumbers, r.TotalChecks)
-	r.TotalChecks += 1
-	r.PassedChecks += 1
+	r.TotalChecks++
+	r.PassedChecks++
 	r.CheckText = append(r.CheckText, msg)
 	if r.LogDuringRun {
 		color.Green(msg)
 	}
 }
 
-func (r *Results) AddFail(msg string) {
+func (r *Results) addFail(msg string) {
 	r.FailedCheckNumbers = append(r.FailedCheckNumbers, r.TotalChecks)
-	r.TotalChecks += 1
-	r.FailedChecks += 1
+	r.TotalChecks++
+	r.FailedChecks++
 	r.CheckText = append(r.CheckText, msg)
 	if r.LogDuringRun {
 		color.Red(msg)
 	}
 }
 
-func (r *Results) AddError(msg string) {
+func (r *Results) addError(msg string) {
 	r.ErroredCheckNumbers = append(r.ErroredCheckNumbers, r.TotalChecks)
-	r.TotalChecks += 1
-	r.ErroredChecks += 1
+	r.TotalChecks++
+	r.ErroredChecks++
 	r.CheckText = append(r.CheckText, msg)
 	if r.LogDuringRun {
 		color.Magenta(msg)

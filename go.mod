@@ -1,12 +1,12 @@
 module github.com/JoeButler99/HCLPolicyChecker
 
-go 1.12
+go 1.14
 
 require (
-	github.com/fatih/color v1.7.0
-	github.com/hashicorp/hcl2 v0.0.0-20190702185634-5b39d9ff3a9a
-	github.com/hashicorp/terraform v0.12.3
-	github.com/mitchellh/mapstructure v1.1.2
-	github.com/zclconf/go-cty v1.0.0
-	gopkg.in/yaml.v2 v2.2.2
+	github.com/fatih/color v1.9.0
+	github.com/hashicorp/hcl2 v0.0.0-20191002203319-fb75b3253c80
+	github.com/hashicorp/terraform v0.12.26
+	github.com/mitchellh/mapstructure v1.3.1
+	github.com/zclconf/go-cty v1.4.1
+	gopkg.in/yaml.v2 v2.3.0
 )
