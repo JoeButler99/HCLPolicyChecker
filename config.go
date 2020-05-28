@@ -33,7 +33,6 @@ func ParseCli() CliConfiguration {
 
 	flag.StringVar(&cc.TargetDir, "target", "", "Target directory")
 	flag.StringVar(&cc.PolicyName, "policy", "", "Policy File")
-
 	flag.Parse()
 
 	return cc
@@ -114,16 +113,17 @@ func (c *HclConfig) LoadConfig(dir string) *configs.Config {
 	dir = c.normalizePath(dir)
 
 	loader, err := configload.NewLoader(&configload.Config{
-		ModulesDir: filepath.Join(c.DataDir(), "modules"),
-		Services:   c.Services,
+		//ModulesDir: filepath.Join(c.DataDir(), "modules"),
+		Services: c.Services,
 	})
 	QuitError(err, "Error Loading HCL config", 1)
 
 	cfg, cfgDiags := loader.LoadConfig(dir)
 
-	if cfgDiags.HasErrors() {
-		QuitError(cfgDiags, "Error Loading config to analyse. ", 1)
-	}
+	fmt.Println(cfgDiags)
+	//if cfgDiags.HasErrors() {
+	//	QuitError(cfgDiags, "Error Loading config to analyse. ", 1)
+	//}
 
 	varValues := make(terraform.InputValues)
 	for name, variable := range cfg.Module.Variables {

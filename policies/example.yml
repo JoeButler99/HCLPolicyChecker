@@ -14,17 +14,24 @@ Variables:
         MinLength: 3
         MaxLength: 40
 Outputs:
-  - CheckName: HasKey
+  - CheckName: KeyValueLength
     Details:
-      Items:
-        - description
+      - KeyName: description
+        MinLength: 10
+        MaxLength: 300
 Resources:
+  '*':
+    - CheckName: LowerCaseName
+    - CheckName: KeyValueLength
+      Details:
+        - KeyName: name
+          MinLength: 3
+          MaxLength: 40
   aws_iam_role:
     - CheckName: HasTags
       Details:
         Items:
           - Name
-          - Bum
           - Repo
           - Version
     - CheckName: HasTags
@@ -36,7 +43,6 @@ Resources:
       Details:
         Items:
           - Name
-          - Bum
           - Repo
           - Version
     - CheckName: HasTags

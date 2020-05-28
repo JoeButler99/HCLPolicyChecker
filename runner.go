@@ -16,7 +16,6 @@ type Results struct {
 func RunChecks(p *PolicyConfig, loadedHcl *configs.Config) {
 
 	// TODO - This is a static mapping of string to function
-	//
 	results := Results{
 		LogDuringRun: true,
 	}
@@ -51,9 +50,10 @@ func RunChecks(p *PolicyConfig, loadedHcl *configs.Config) {
 	if len(p.Resources) > 0 && len(loadedHcl.Module.ManagedResources) > 0 {
 		fmt.Println("Performing checks against type: 'resource'")
 		for _, hclVar := range loadedHcl.Module.ManagedResources {
-			fmt.Printf("Checking Resource: %s\n", hclVar.Name)
+			fmt.Printf("Checking Resource: %s  %s\n", hclVar.Type, hclVar.Name)
 			for resourceType, checkList := range p.Resources {
-				if hclVar.Type == resourceType {
+
+				if hclVar.Type == resourceType || resourceType == "*" {
 					for _, check := range checkList {
 						var hclObj HCLObject
 						hclObj.FromResource(hclVar, loadedHcl.Module)

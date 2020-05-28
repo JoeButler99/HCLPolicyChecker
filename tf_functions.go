@@ -12,9 +12,6 @@ import (
 	"github.com/zclconf/go-cty/cty/function"
 )
 
-//
-
-// Variable represents a "variable" block in a module or file.
 type HCLObject struct {
 	Name        string
 	Description string
@@ -49,11 +46,6 @@ func (h *HCLObject) FromOutput(o *configs.Output) {
 func (h *HCLObject) FromResource(r *configs.Resource, module *configs.Module) {
 
 	a, _ := r.Config.JustAttributes()
-	//fmt.Println(module.Locals)
-	//
-	//for k, v := range module.Locals {
-	//	fmt.Println(k, v)
-	//}
 
 	for k, v := range a {
 		if k == "tags" {

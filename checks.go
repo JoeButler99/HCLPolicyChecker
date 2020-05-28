@@ -91,7 +91,7 @@ func RunCheck(check *Check, results *Results, hclVar *HCLObject, typeName string
 
 				passed, msg := CheckStringLength(keyValueLengthCheck.MinLength, keyValueLengthCheck.MaxLength, s)
 				if passed {
-					results.AddPass(fmt.Sprintf("%s %s.%s lentgh between %d and %d chars", typeName, hclVar.Name, kn, keyValueLengthCheck.MinLength, keyValueLengthCheck.MaxLength))
+					results.AddPass(fmt.Sprintf("%s %s.%s length between %d and %d chars", typeName, hclVar.Name, kn, keyValueLengthCheck.MinLength, keyValueLengthCheck.MaxLength))
 				} else {
 					results.AddFail(fmt.Sprintf("Fail %s %s.%s %s. - %s", typeName, hclVar.Name, kn, msg, hclVar.DeclRange))
 				}
