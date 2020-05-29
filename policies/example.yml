@@ -1,5 +1,7 @@
 ---
 Variables:
+  - CheckName: LowerCaseName
+  - CheckName: NoHyphens
   - CheckName: HasKey
     Details:
       Items:
@@ -14,6 +16,8 @@ Variables:
         MinLength: 3
         MaxLength: 40
 Outputs:
+  - CheckName: LowerCaseName
+  - CheckName: NoHyphens
   - CheckName: KeyValueLength
     Details:
       - KeyName: description
@@ -22,6 +26,7 @@ Outputs:
 Resources:
   '*':
     - CheckName: LowerCaseName
+    - CheckName: NoHypens
     - CheckName: KeyValueLength
       Details:
         - KeyName: name

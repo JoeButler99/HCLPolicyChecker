@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/mitchellh/mapstructure"
+	"os"
 	"reflect"
 	"strings"
 )
@@ -100,5 +101,20 @@ func RunCheck(check *Check, results *Results, hclVar *HCLObject, typeName string
 				results.addFail(fmt.Sprintf("Missing or Empty Key %s in %s %s", kn, typeName, hclVar.Name))
 			}
 		}
+	case "LowerCaseName":
+		if hclVar.Name == strings.ToLower(hclVar.Name) {
+			results.addPass("Name found to be lowercase")
+		} else {
+			results.addFail(fmt.Sprintf("Name: %s contains uppercase characters", hclVar.Name))
+		}
+	case "NoHyphens":
+		if hclVar.Name == strings.ReplaceAll(hclVar.Name, "-", "") {
+			results.addPass("No Hyphens found in name")
+		} else {
+			results.addFail(fmt.Sprintf("Name: %s contains hyphens", hclVar.Name))
+		}
+	default:
+		fmt.Printf("Did not recognise check: %s\n", check.CheckName)
+		os.Exit(5)
 	}
 }

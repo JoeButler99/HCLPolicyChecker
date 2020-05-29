@@ -13,7 +13,7 @@ type Results struct {
 	LogDuringRun                                              bool
 }
 
-func RunChecks(p *PolicyConfig, loadedHcl *configs.Config) {
+func RunChecks(p *PolicyConfig, loadedHcl *configs.Config) *Results {
 
 	// TODO - This is a static mapping of string to function
 	results := Results{
@@ -65,7 +65,7 @@ func RunChecks(p *PolicyConfig, loadedHcl *configs.Config) {
 	}
 
 	results.DisplayResults()
-
+	return &results
 }
 
 func (r *Results) addPass(msg string) {

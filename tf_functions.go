@@ -50,12 +50,12 @@ func (h *HCLObject) FromResource(r *configs.Resource, module *configs.Module) {
 	for k, v := range a {
 		if k == "tags" {
 			fmt.Println("NEW")
-			vars := make(map[string]cty.Value)
+			//vars := make(map[string]cty.Value)
 
 			for a, b := range v.Expr.Variables() {
 				fmt.Println(a, b.RootName())
 			}
-			fmt.Println(vars)
+			//fmt.Println(vars)
 
 			evalContext := &hcl.EvalContext{
 				Variables: map[string]cty.Value{},
@@ -65,12 +65,9 @@ func (h *HCLObject) FromResource(r *configs.Resource, module *configs.Module) {
 				},
 			}
 
-			fmt.Println()
-
 			val, _ := v.Expr.Value(evalContext)
 			fmt.Println(val.Type())
 			//fmt.Println(val.AsValueSet())
-
 			//fmt.Println(val.AsValueMap())
 		}
 	}

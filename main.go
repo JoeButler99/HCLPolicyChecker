@@ -30,6 +30,14 @@ func main() {
 	loadedConfig := hclCfg.LoadConfig(conf.TargetDir)
 
 	// Run the checks
-	RunChecks(&pol, loadedConfig)
+	results := RunChecks(&pol, loadedConfig)
+
+	// Return
+	if results.ErroredChecks > 0 {
+		os.Exit(2)
+	}
+	if results.FailedChecks > 0 {
+		os.Exit(1)
+	}
 
 }
