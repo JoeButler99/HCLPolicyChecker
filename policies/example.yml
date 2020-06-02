@@ -1,12 +1,13 @@
 ---
+Data:
+  - CheckName: LowerCaseName
+  - CheckName: NoHyphens
+Locals:
+  - CheckName: LowerCaseName
+  - CheckName: NoHyphens
 Variables:
   - CheckName: LowerCaseName
   - CheckName: NoHyphens
-  - CheckName: HasKey
-    Details:
-      Items:
-        - description
-        - type
   - CheckName: KeyValueLength
     Details:
       - KeyName: description

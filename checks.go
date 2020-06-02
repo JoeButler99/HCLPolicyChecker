@@ -89,7 +89,6 @@ func RunCheck(check *Check, results *Results, hclVar *HCLObject, typeName string
 			kn := strings.Title(keyValueLengthCheck.KeyName) // TODO - strings.Title could be something better...
 			if CheckHasKey(hclVar, kn) {
 				s := GetFieldString(hclVar, kn)
-
 				passed, msg := CheckStringLength(keyValueLengthCheck.MinLength, keyValueLengthCheck.MaxLength, s)
 				if passed {
 					results.addPass(fmt.Sprintf("%s %s.%s length between %d and %d chars", typeName, hclVar.Name, kn, keyValueLengthCheck.MinLength, keyValueLengthCheck.MaxLength))

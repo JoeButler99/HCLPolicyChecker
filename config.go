@@ -59,6 +59,8 @@ type Check struct {
 }
 
 type PolicyConfig struct {
+	Locals    []Check            `yaml:"Locals"`
+	Data      []Check            `yaml:"Data"`
 	Variables []Check            `yaml:"Variables"`
 	Outputs   []Check            `yaml:"Outputs"`
 	Resources map[string][]Check `yaml:"Resources"`
@@ -115,9 +117,10 @@ func (c *HclConfig) LoadConfig(dir string) *configs.Config {
 	})
 	QuitError(err, "Error Loading HCL config", 1)
 
-	cfg, cfgDiags := loader.LoadConfig(dir)
+	cfg, _ := loader.LoadConfig(dir)
 
-	fmt.Println(cfgDiags)
+	//cfg, cfgDiags := loader.LoadConfig(dir)
+	//fmt.Println(cfgDiags)
 	//if cfgDiags.HasErrors() {
 	//	QuitError(cfgDiags, "Error Loading config to analyse. ", 1)
 	//}

@@ -30,7 +30,15 @@ func (h *HCLObject) FromVariable(v *configs.Variable) {
 	h.Default = v.Default
 	h.Type = v.Type
 	h.ParsingMode = v.ParsingMode
+}
 
+func (h *HCLObject) FromLocal(v *configs.Local) {
+	t, _ := v.Expr.Value(nil)
+	h.Name = v.Name
+	h.Description = ""
+	h.Default = cty.Value{}
+	h.Type = t.Type()
+	h.ParsingMode = configs.VariableParseHCL
 }
 
 func (h *HCLObject) FromOutput(o *configs.Output) {
@@ -40,7 +48,6 @@ func (h *HCLObject) FromOutput(o *configs.Output) {
 	h.Default = cty.Value{}
 	h.Type = t.Type()
 	h.ParsingMode = configs.VariableParseHCL
-
 }
 
 func (h *HCLObject) FromResource(r *configs.Resource, module *configs.Module) {

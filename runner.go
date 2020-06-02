@@ -64,6 +64,30 @@ func RunChecks(p *PolicyConfig, loadedHcl *configs.Config) *Results {
 		}
 	}
 
+	if len(p.Data) > 0 && len(loadedHcl.Module.DataResources) > 0 {
+		fmt.Println("Performing checks against type: 'data'")
+		for _, hclData := range loadedHcl.Module.DataResources {
+			fmt.Printf("Checking Data Resource: %s  %s\n", hclData.Type, hclData.Name)
+			for _, check := range p.Data {
+				var hclObj HCLObject
+				hclObj.FromResource(hclData, loadedHcl.Module)
+				RunCheck(&check, &results, &hclObj, "Data")
+			}
+		}
+	}
+
+	if len(p.Locals) > 0 && len(loadedHcl.Module.Locals) > 0 {
+		fmt.Println("Performing checks against type: 'local'")
+		for _, hclLocal := range loadedHcl.Module.Locals {
+			fmt.Printf("Checking Local: %s\n", hclLocal.Name)
+			for _, check := range p.Data {
+				var hclObj HCLObject
+				hclObj.FromLocal(hclLocal)
+				RunCheck(&check, &results, &hclObj, "Local")
+			}
+		}
+	}
+
 	results.DisplayResults()
 	return &results
 }
