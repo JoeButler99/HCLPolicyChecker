@@ -27,7 +27,7 @@ Outputs:
 Resources:
   '*':
     - CheckName: LowerCaseName
-    - CheckName: NoHypens
+    - CheckName: NoHyphens
     - CheckName: KeyValueLength
       Details:
         - KeyName: name
