@@ -25,7 +25,7 @@ func CheckHasKey(e interface{}, FieldName string) bool {
 		// Create a new type of Iface's Type, so we have a pointer to work with
 		ValueIface = reflect.New(reflect.TypeOf(e))
 	}
-
+	// log.Println(ValueIface.Elem())
 	Field := ValueIface.Elem().FieldByName(FieldName)
 
 	if !Field.IsValid() {
@@ -56,6 +56,16 @@ func CheckStringLength(min, max int, inputString string) (bool, string) {
 	}
 
 	return true, "sd"
+}
+
+// StringInSlice takes a string and a slice of strings and asserts if the string is in slice
+func StringInSlice(a string, list []string) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
 }
 
 func RunCheck(check *Check, results *Results, hclVar *HCLObject, typeName string) {
@@ -101,7 +111,7 @@ func RunCheck(check *Check, results *Results, hclVar *HCLObject, typeName string
 			}
 		}
 	case "LowerCaseName":
-		if hclVar.Name == strings.ToLower(hclVar.Name) {
+		if hclVar.Name == strings.ToLower(hclVar.Name) {	
 			results.addPass("Name found to be lowercase")
 		} else {
 			results.addFail(fmt.Sprintf("Name: %s contains uppercase characters", hclVar.Name))
@@ -112,6 +122,28 @@ func RunCheck(check *Check, results *Results, hclVar *HCLObject, typeName string
 		} else {
 			results.addFail(fmt.Sprintf("Name: %s contains hyphens", hclVar.Name))
 		}
+	
+	case "NoResourceTypeName":
+		// https://www.terraform-best-practices.com/naming#resource-and-data-source-arguments
+		resourceNames := strings.Split(hclVar.Name, "_")
+		fail := false
+		for _, word := range strings.Split(hclVar.Type.GoString(), "_") {
+			if StringInSlice(word, resourceNames) {
+				fail = true
+			}
+		}
+		if fail {
+			results.addFail(fmt.Sprintf("Resource Name: %s contains similar words to the Resource type %s", hclVar.Name, hclVar.Type.GoString()))
+		} else {
+			results.addPass("Resource names not similar to resource type names")
+		}
+	case "ResourceCountFirst":
+		if hclVar.ValidCountPosition {
+			results.addPass("Resource has count defined at top of statement with blank line padding")
+		} else {
+			results.addFail(fmt.Sprintf("Resource name %s does not have a count defined with blank line padded", hclVar.Name))
+		}
+		
 	default:
 		fmt.Printf("Did not recognise check: %s\n", check.CheckName)
 		os.Exit(5)

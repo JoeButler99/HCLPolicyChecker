@@ -26,7 +26,6 @@ func RunChecks(p *PolicyConfig, loadedHcl *configs.Config) *Results {
 
 		for _, hclVar := range loadedHcl.Module.Variables {
 			fmt.Printf("Checking Variable: %s\n", hclVar.Name)
-
 			for _, check := range p.Variables {
 				var hclObj HCLObject
 				hclObj.FromVariable(hclVar)

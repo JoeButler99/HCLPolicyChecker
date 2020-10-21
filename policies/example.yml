@@ -28,6 +28,8 @@ Resources:
   '*':
     - CheckName: LowerCaseName
     - CheckName: NoHyphens
+    - CheckName: ResourceCountFirst
+    - CheckName: NoResourceTypeName
     - CheckName: KeyValueLength
       Details:
         - KeyName: name
