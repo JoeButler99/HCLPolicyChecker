@@ -30,6 +30,7 @@ Resources:
     - CheckName: NoHyphens
     - CheckName: ResourceCountFirst
     - CheckName: NoResourceTypeName
+    - CheckName: ResourceNameNoun
     - CheckName: KeyValueLength
       Details:
         - KeyName: name

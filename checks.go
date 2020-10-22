@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/JoeButler99/HCLPolicyChecker/lookup"
 	"github.com/mitchellh/mapstructure"
 	"os"
+	"log"
 	"reflect"
 	"strings"
 )
@@ -16,6 +18,8 @@ type KeyValueLengthDetails struct {
 	KeyName              string
 	MinLength, MaxLength int
 }
+
+var escapeNounWords = []string{"this", "public", "private"}
 
 func CheckHasKey(e interface{}, FieldName string) bool {
 	ValueIface := reflect.ValueOf(e)
@@ -111,7 +115,7 @@ func RunCheck(check *Check, results *Results, hclVar *HCLObject, typeName string
 			}
 		}
 	case "LowerCaseName":
-		if hclVar.Name == strings.ToLower(hclVar.Name) {	
+		if hclVar.Name == strings.ToLower(hclVar.Name) {
 			results.addPass("Name found to be lowercase")
 		} else {
 			results.addFail(fmt.Sprintf("Name: %s contains uppercase characters", hclVar.Name))
@@ -122,7 +126,38 @@ func RunCheck(check *Check, results *Results, hclVar *HCLObject, typeName string
 		} else {
 			results.addFail(fmt.Sprintf("Name: %s contains hyphens", hclVar.Name))
 		}
-	
+	case "ResourceNameNoun":
+	// TODO does it check every word or just check if one noun
+		resourceNames := strings.Split(hclVar.Name, "_")
+		failed := false
+		for _, resourceName := range resourceNames {
+			if StringInSlice(resourceName, escapeNounWords) {
+				continue
+			}
+			
+			content, err := lookup.GetWord(resourceName)
+			if err != nil || content["tags"] == nil {
+				results.addFail("Resource name is not a noun")
+				failed = true 
+				break 
+			}
+			tags := content["tags"].([]interface{})
+			noun := false
+			for _, tag := range tags {
+				log.Println(tag)
+				if tag == "n" {
+					noun = true
+				}
+			}
+			if !noun {
+				results.addFail("Resource name is not a noun")
+				failed = true 
+				break
+			}
+		}
+		if !failed {
+			results.addPass("Resource name is a noun")
+		}	
 	case "NoResourceTypeName":
 		// https://www.terraform-best-practices.com/naming#resource-and-data-source-arguments
 		resourceNames := strings.Split(hclVar.Name, "_")
@@ -143,7 +178,7 @@ func RunCheck(check *Check, results *Results, hclVar *HCLObject, typeName string
 		} else {
 			results.addFail(fmt.Sprintf("Resource name %s does not have a count defined with blank line padded", hclVar.Name))
 		}
-		
+
 	default:
 		fmt.Printf("Did not recognise check: %s\n", check.CheckName)
 		os.Exit(5)
