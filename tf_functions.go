@@ -55,9 +55,12 @@ func (h *HCLObject) FromOutput(o *configs.Output) {
 }
 
 func (h *HCLObject) FromResource(r *configs.Resource, module *configs.Module) {
-
 	a, _ := r.Config.JustAttributes()
-	countLine := r.Count.Range().Start.Line
+	countLine := 0
+	if r.Count != nil {
+		countLine = r.Count.Range().Start.Line
+	}
+	
 	validCount := true
 	for k, v := range a {
 		// TODO check name range is at least -- 2 lines after count
@@ -94,6 +97,9 @@ func (h *HCLObject) FromResource(r *configs.Resource, module *configs.Module) {
 	h.Default = cty.Value{}
 	h.Type = cty.Type{}
 	h.ParsingMode = configs.VariableParseHCL
-	h.Count = r.Count
-	h.ValidCountPosition = validCount
+	if r.Count != nil {
+		h.Count = r.Count
+		h.ValidCountPosition = validCount
+	}
+	
 }

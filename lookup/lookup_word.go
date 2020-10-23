@@ -58,6 +58,10 @@ func createAPI(endPoint *url.URL) *API {
 	return a
 }
 
+
+// GetWord takes a string and searches and returns the best scoring match from:
+// "https://api.datamuse.com/words/"
+// If the string does not exactly match it will return an empty struct 
 func GetWord(word string) (map[string]interface{}, error) {
 	queryParams := make(url.Values)
 	queryParams.Add("sp", word)
