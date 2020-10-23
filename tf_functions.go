@@ -10,7 +10,6 @@ import (
 	"github.com/hashicorp/terraform/lang/funcs"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/function"
-	"log"
 )
 
 type HCLObject struct {
@@ -57,11 +56,13 @@ func (h *HCLObject) FromOutput(o *configs.Output) {
 func (h *HCLObject) FromResource(r *configs.Resource, module *configs.Module) {
 	a, _ := r.Config.JustAttributes()
 	countLine := 0
+	validCount := false
 	if r.Count != nil {
+		validCount = true
 		countLine = r.Count.Range().Start.Line
 	}
 	
-	validCount := true
+	
 	for k, v := range a {
 		// TODO check name range is at least -- 2 lines after count
 		if v.NameRange.Start.Line < countLine+2 {
@@ -69,12 +70,12 @@ func (h *HCLObject) FromResource(r *configs.Resource, module *configs.Module) {
 		}
 		// make sure count is passed
 		if k == "tags" {
-			fmt.Println("NEW")
+			// fmt.Println("NEW")
 			//vars := make(map[string]cty.Value)
 
-			for a, b := range v.Expr.Variables() {
-				log.Println(a, b.RootName())
-			}
+			// for a, b := range v.Expr.Variables() {
+			// 	log.Println(a, b.RootName())
+			// }
 			//fmt.Println(vars)
 
 			evalContext := &hcl.EvalContext{
@@ -97,9 +98,7 @@ func (h *HCLObject) FromResource(r *configs.Resource, module *configs.Module) {
 	h.Default = cty.Value{}
 	h.Type = cty.Type{}
 	h.ParsingMode = configs.VariableParseHCL
-	if r.Count != nil {
-		h.Count = r.Count
-		h.ValidCountPosition = validCount
-	}
+	h.Count = r.Count
+	h.ValidCountPosition = validCount
 	
 }
