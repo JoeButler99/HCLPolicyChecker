@@ -7,7 +7,7 @@ import (
 )
 
 type Results struct {
-	PassedChecks, FailedChecks, ErroredChecks, TotalChecks    int
+	PassedChecks, FailedChecks, ErroredChecks, WarningChecks, TotalChecks    int
 	CheckText                                                 []string
 	PassCheckNumbers, FailedCheckNumbers, ErroredCheckNumbers []int // Which indexes of CheckText have a failed item
 	LogDuringRun                                              bool
@@ -111,6 +111,16 @@ func (r *Results) addFail(msg string) {
 	}
 }
 
+func (r *Results) addWarning(msg string) {
+	r.FailedCheckNumbers = append(r.FailedCheckNumbers, r.TotalChecks)
+	r.TotalChecks++
+	r.WarningChecks++
+	r.CheckText = append(r.CheckText, msg)
+	if r.LogDuringRun {
+		color.Yellow(msg)
+	}
+}
+
 func (r *Results) addError(msg string) {
 	r.ErroredCheckNumbers = append(r.ErroredCheckNumbers, r.TotalChecks)
 	r.TotalChecks++
@@ -126,4 +136,5 @@ func (r *Results) DisplayResults() {
 	fmt.Println("Total Passed Checks: ", r.PassedChecks)
 	fmt.Println("Total Failed Checks: ", r.FailedChecks)
 	fmt.Println("Total Errored Checks: ", r.ErroredChecks)
+	fmt.Println("Total Warning Checks: ", r.WarningChecks)
 }

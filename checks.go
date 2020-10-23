@@ -5,7 +5,6 @@ import (
 	"github.com/JoeButler99/HCLPolicyChecker/lookup"
 	"github.com/mitchellh/mapstructure"
 	"os"
-	"log"
 	"reflect"
 	"strings"
 )
@@ -137,14 +136,13 @@ func RunCheck(check *Check, results *Results, hclVar *HCLObject, typeName string
 			
 			content, err := lookup.GetWord(resourceName)
 			if err != nil || content["tags"] == nil {
-				results.addFail("Resource name is not a noun")
+				results.addWarning("Resource name is not a noun")
 				failed = true 
 				break 
 			}
 			tags := content["tags"].([]interface{})
 			noun := false
 			for _, tag := range tags {
-				log.Println(tag)
 				if tag == "n" {
 					noun = true
 				}

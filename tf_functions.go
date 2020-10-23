@@ -82,8 +82,7 @@ func (h *HCLObject) FromResource(r *configs.Resource, module *configs.Module) {
 				},
 			}
 
-			val, _ := v.Expr.Value(evalContext)
-			log.Println(val.Type())
+			v.Expr.Value(evalContext)
 			//fmt.Println(val.AsValueSet())
 			//fmt.Println(val.AsValueMap())
 		}
